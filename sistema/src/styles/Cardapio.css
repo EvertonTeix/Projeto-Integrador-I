@@ -1,0 +1,288 @@
+/* Estilos Gerais */
+.cardapio-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: transparent;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+/* Cabeçalho */
+.cardapio-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    height: 80px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 20px; /* Ajuste para não considerar o menu lateral */
+    right: 20px;
+    z-index: 100;
+}
+
+.cardapio-header h2 {
+    margin: 0;
+    font-size: 2.5rem;
+    color: #333;
+    font-weight: bold;
+}
+
+.cardapio-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.search-input {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    font-size: 16px;
+    width: 250px;
+    transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #FFD700;
+    outline: none;
+}
+
+.button {
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 16px;
+}
+
+.button:hover {
+    background-color: #FFD700;
+    color: #333;
+    transform: scale(1.05);
+}
+
+.button.voltar {
+    background-color: #FFD700; /* Azul para o botão de voltar */
+}
+
+.button.voltar:hover {
+    background-color: #333;
+    color: #FFD700
+}
+
+/* Estilos para a tabela de produtos */
+.tipo-produto {
+    margin-top: 100px; /* Espaço para o cabeçalho fixo */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.tipo-produto h3 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.produtos-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.produtos-table th,
+.produtos-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.produtos-table th {
+    background-color: #333;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.produtos-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Estilos para a tabela de produtos */
+.tipo-produto {
+    margin-top: 100px; /* Espaço para o cabeçalho fixo */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Ocupa toda a largura */
+    overflow-x: auto; /* Adiciona scroll horizontal se necessário */
+}
+
+.tipo-produto h3 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.produtos-table {
+    width: 100%; /* Ocupa toda a largura disponível */
+    border-collapse: collapse;
+    margin-top: 10px;
+    table-layout: fixed; /* Distribui o espaço igualmente entre as colunas */
+}
+
+.produtos-table th,
+.produtos-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    word-wrap: break-word; /* Quebra palavras longas para evitar overflow */
+}
+
+.produtos-table th {
+    background-color: #333;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.produtos-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Estilos para os botões de editar e excluir */
+.acoes-cell {
+    display: flex;
+    gap: 10px; /* Espaço entre os botões */
+}
+
+.button-editar,
+.button-remover {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%; /* Botões redondos */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-editar {
+    color: #3498db; /* Azul */
+}
+
+.button-remover {
+    color: #e74c3c; /* Vermelho */
+}
+
+.conteudo-principal{
+    background-color: transparent;
+}
+
+.button-editar:hover {
+    background-color: rgba(52, 152, 219, 0.1); /* Azul claro */
+    transform: scale(1.1);
+}
+
+.button-remover:hover {
+    background-color: rgba(231, 76, 60, 0.1); /* Vermelho claro */
+    transform: scale(1.1);
+}
+
+/* Ícones para os botões */
+.button-editar::after {
+    content: '✏️'; /* Ícone de editar */
+}
+
+.button-remover::after {
+    content: '🗑️'; /* Ícone de lixeira */
+}
+
+/* Estilos para o modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    width: 400px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.modal-content .input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.modal-content .button {
+    padding: 10px 20px;
+    margin-right: 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal-content .button:hover {
+    background-color: #FFD700;
+    color: #333;
+}
+
+.sem-produtos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* Ocupa toda a largura */
+    height: 100vh; /* Ocupa toda a altura da tela */
+    font-size: 1em;
+    color: #666; /* Cor do texto */
+    background-color: transparent; /* Fundo transparente */
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    border: none; /* Remove bordas */
+    box-shadow: none; /* Remove sombras */
+    position: fixed; /* Fixa o elemento na tela */
+    top: 0;
+    left: 0;
+    overflow: hidden; /* Remove o scroll */
+}
+

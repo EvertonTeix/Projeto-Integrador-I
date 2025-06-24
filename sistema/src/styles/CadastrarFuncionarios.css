@@ -1,0 +1,86 @@
+/* Container Principal */
+.cadastrar-funcionario-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: transparent;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    margin-top: 100px; /* Espaço para o cabeçalho fixo */
+}
+
+/* Cabeçalho Fixo */
+.cabecalho-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    height: 80px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 20px; /* Ajuste para não considerar o menu lateral */
+    right: 20px;
+    z-index: 100;
+}
+
+.cabecalho-header h2 {
+    margin: 0;
+    font-size: 2.5rem;
+    color: #333;
+    font-weight: bold;
+}
+
+.botoes-cabecalho {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Lista de Funcionários */
+.lista-funcionarios {
+    margin-top: 20px;
+    width: 100%;
+    overflow-x: auto; /* Adiciona scroll horizontal se necessário */
+}
+
+.lista-funcionarios h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Tabela de Funcionários */
+.tabela-funcionarios {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.tabela-funcionarios th,
+.tabela-funcionarios td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.tabela-funcionarios th {
+    background-color: #f9f9f9;
+    font-weight: bold;
+    color: #333;
+}
+
+.tabela-funcionarios tr:hover {
+    background-color: #f1f1f1;
+}
+
+.sem-funcionarios {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+    margin-top: 20px;
+}
