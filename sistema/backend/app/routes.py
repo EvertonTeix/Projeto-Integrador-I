@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, request
 from . import db
-from .models import Usuario, Produto, Tipos
+from .models import Usuario, Produto, Tipos, Pedido, ItemPedido
 import hashlib
+from datetime import datetime
 
 main_routes = Blueprint('main', __name__)
 
@@ -220,3 +221,52 @@ def listar_tipos():
         return jsonify(tipos_json), 200
     except Exception as e:
         return jsonify({"mensagem": "Erro ao listar tipos.", "erro": str(e)}), 500
+
+
+
+@main_routes.route('/api/pedidos', methods=['POST'])
+def fazer_pedido():
+    try:
+        if not request.is_json:
+            return jsonify({"mensagem": "O cabeçalho Content-Type deve ser application/json."}), 415
+
+        dados = request.json
+
+        funcionario_id = dados.get('funcionario_id')
+        produtos = dados.get('produtos', [])
+        total = dados.get('total')
+
+        if not funcionario_id or not produtos or total is None:
+            return jsonify({"mensagem": "Campos obrigatórios ausentes (funcionario_id, produtos, total)."}), 400
+
+        # Cria o pedido
+        novo_pedido = Pedido(
+            funcionario_id=funcionario_id,
+            data_hora=datetime.utcnow(),
+            total=total
+        )
+        db.session.add(novo_pedido)
+        db.session.flush()  # Garante que novo_pedido.id esteja disponível
+
+        # Adiciona os itens do pedido
+        for item in produtos:
+            produto = Produto.query.get(item['id'])
+            if not produto:
+                continue  # ignora produtos inválidos
+
+            item_pedido = ItemPedido(
+                pedido_id=novo_pedido.id,
+                produto_id=produto.id,
+                quantidade=item.get('quantidade', 1),
+                preco_unitario=produto.preco
+            )
+            db.session.add(item_pedido)
+
+        db.session.commit()
+
+        return jsonify({"mensagem": "Pedido realizado com sucesso!"}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        print("Erro ao fazer pedido:", str(e))
+        return jsonify({"mensagem": "Erro ao fazer pedido.", "erro": str(e)}), 500

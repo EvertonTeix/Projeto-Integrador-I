@@ -45,28 +45,30 @@ function Login() {
     };
 
     return (
-        <div className="login-container">
-            <h1>Login</h1>
-            <form onSubmit={handleLogin} className="login-form">
-                <input
-                    type="email"
-                    placeholder="E-mail"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="login-input"
-                    required
-                />
-                <input
-                    type="password"
-                    placeholder="Senha"
-                    value={senha}
-                    onChange={(e) => setSenha(e.target.value)}
-                    className="login-input"
-                    required
-                />
-                <button type="submit" className="login-button">Entrar</button>
-            </form>
-            {mensagem && <p className="login-mensagem">{mensagem}</p>}
+        <div className="login-body">
+            <div className="login-container">
+                <h1>Login</h1>
+                <form onSubmit={handleLogin} className="login-form">
+                    <input
+                        type="email"
+                        placeholder="E-mail"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="login-input"
+                        required
+                    />
+                    <input
+                        type="password"
+                        placeholder="Senha"
+                        value={senha}
+                        onChange={(e) => setSenha(e.target.value)}
+                        className="login-input"
+                        required
+                    />
+                    <button type="submit" className="login-button">Entrar</button>
+                </form>
+                {mensagem && <p className="login-mensagem">{mensagem}</p>}
+            </div>
         </div>
     );
 }
