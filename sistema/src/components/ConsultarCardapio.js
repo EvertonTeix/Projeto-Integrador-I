@@ -52,7 +52,7 @@ function ConsultarCardapio() {
                             <h3>{tipo.charAt(0).toUpperCase() + tipo.slice(1)}</h3>
                             <div className="coluna-produtos">
                                 {produtosPorTipo[tipo].map((produto) => (
-                                    <div key={produto.id} className="produto-item">
+                                    <div key={produto.id} className="cardapio-item">
                                         <h4>{produto.nome}</h4>
                                         <p>{produto.descricao}</p>
                                         <span>R$ {produto.preco.toFixed(2)}</span>

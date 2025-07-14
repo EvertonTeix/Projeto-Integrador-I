@@ -270,3 +270,16 @@ def fazer_pedido():
         db.session.rollback()
         print("Erro ao fazer pedido:", str(e))
         return jsonify({"mensagem": "Erro ao fazer pedido.", "erro": str(e)}), 500
+
+@main_routes.route('/api/pedidos/funcionario/<int:funcionario_id>', methods=['GET'])
+def pedidos_por_funcionario(funcionario_id):
+    try:
+        pedidos = Pedido.query.filter_by(funcionario_id=funcionario_id).all()
+        pedidos_json = [{
+            "id": p.id,
+            "data_hora": p.data_hora,
+            "total": p.total
+        } for p in pedidos]
+        return jsonify(pedidos_json), 200
+    except Exception as e:
+        return jsonify({"mensagem": "Erro ao buscar pedidos.", "erro": str(e)}), 500

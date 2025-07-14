@@ -7,6 +7,7 @@ import Cardapio from './components/Cardapio';
 import Vendas from './components/Vendas';
 import FazerPedido from './components/FazerPedido';
 import ConsultarCardapio from './components/ConsultarCardapio';
+import MeusPedidos from './components/MeusPedidos';
 import CadastrarFuncionario from './components/CadastrarFuncionario';
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
                 <Route path="/funcionarios" element={<CadastrarFuncionario />} />
                 <Route path="/fazer-pedido" element={<FazerPedido />} /> 
                 <Route path="/consultar-cardapio" element={<ConsultarCardapio />} /> 
+                <Route path="/meus-pedidos" element={<MeusPedidos />} /> 
                 <Route path="*" element={<Navigate to="/login" />} />
             </Routes>
         </Router>
