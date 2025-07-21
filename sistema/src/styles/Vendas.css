@@ -1,0 +1,113 @@
+.vendas-container {
+    margin-top: 0px;
+    padding: 20px;
+}
+
+/* Cabeçalho fixo */
+.pedido-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    height: 80px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 20px;
+    right: 20px;
+    z-index: 10;
+}
+
+.pedido-header h2 {
+    font-size: 2rem;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Lista de recibos */
+.recibos-lista {
+    margin-top: 120px; /* compensar cabeçalho fixo */
+}
+
+/* Card de recibo */
+.recibo {
+    background-color: #fff;
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Topo do recibo */
+.recibo-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.recibo-topo h3 {
+    font-size: 1.5rem;
+    color: #444;
+    margin: 0;
+}
+
+.recibo-topo svg {
+    font-size: 28px;
+    color: #333;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.recibo-topo svg:hover {
+    color: #FFD700;
+}
+
+/* Lista de itens do pedido */
+.recibo ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 15px;
+}
+
+.recibo li {
+    margin-bottom: 8px;
+    font-size: 1rem;
+    color: #555;
+}
+
+/* Total */
+.recibo p strong {
+    font-size: 1.2rem;
+    color: #000;
+}
+
+/* Botões */
+.button {
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.button:hover {
+    background-color: #FFD700;
+    color: #333;
+}
+
+.button.voltar {
+    background-color: #FFD700;
+    color: #333;
+    margin-left: 10px;
+}
+
+.button.voltar:hover {
+    background-color: #333;
+    color: #FFD700;
+}

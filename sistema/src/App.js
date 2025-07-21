@@ -9,6 +9,7 @@ import FazerPedido from './components/FazerPedido';
 import ConsultarCardapio from './components/ConsultarCardapio';
 import MeusPedidos from './components/MeusPedidos';
 import CadastrarFuncionario from './components/CadastrarFuncionario';
+import Recibo from './components/Recibo';
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                 <Route path="/funcionario" element={<HomeFunc />} />
                 <Route path="/cardapio" element={<Cardapio />} />
                 <Route path="/vendas" element={<Vendas />} />
+                <Route path="/recibo/:id" element={<Recibo />} />
                 <Route path="/funcionarios" element={<CadastrarFuncionario />} />
                 <Route path="/fazer-pedido" element={<FazerPedido />} /> 
                 <Route path="/consultar-cardapio" element={<ConsultarCardapio />} /> 

@@ -283,3 +283,34 @@ def pedidos_por_funcionario(funcionario_id):
         return jsonify(pedidos_json), 200
     except Exception as e:
         return jsonify({"mensagem": "Erro ao buscar pedidos.", "erro": str(e)}), 500
+
+
+@main_routes.route('/api/pedidos-completos', methods=['GET'])
+def listar_pedidos_completos():
+    try:
+        pedidos = Pedido.query.order_by(Pedido.data_hora.desc()).all()
+
+        pedidos_json = []
+        for pedido in pedidos:
+            itens = []
+            for item in pedido.itens:
+                itens.append({
+                    "produto": item.produto.nome,
+                    "quantidade": item.quantidade,
+                    "preco_unitario": item.preco_unitario,
+                    "subtotal": round(item.quantidade * item.preco_unitario, 2)
+                })
+
+            pedidos_json.append({
+                "id": pedido.id,
+                "data_hora": pedido.data_hora.strftime("%d/%m/%Y %H:%M"),
+                "funcionario": pedido.funcionario.nome,
+                "total": round(pedido.total, 2),
+                "itens": itens
+            })
+
+        return jsonify(pedidos_json), 200
+    except Exception as e:
+        print("Erro ao listar pedidos completos:", str(e))
+        return jsonify({"mensagem": "Erro ao listar pedidos."}), 500
+
