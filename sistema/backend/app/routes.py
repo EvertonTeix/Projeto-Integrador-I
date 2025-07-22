@@ -313,3 +313,20 @@ def listar_pedidos_completos():
         print("Erro ao listar pedidos completos:", str(e))
         return jsonify({"mensagem": "Erro ao listar pedidos."}), 500
 
+@main_routes.route('/api/vendas/hoje', methods=['GET'])
+def vendas_do_dia():
+    try:
+        hoje = datetime.utcnow().date()  # Data de hoje no formato UTC
+
+        # Filtra pedidos pela data de hoje (somente pedidos feitos hoje)
+        pedidos_hoje = Pedido.query.filter(
+            db.func.date(Pedido.data_hora) == hoje
+        ).all()
+
+        # Soma os totais dos pedidos de hoje
+        total_vendas = sum(p.total for p in pedidos_hoje)
+
+        return jsonify({"total": round(total_vendas, 2)}), 200
+    except Exception as e:
+        print("Erro ao calcular vendas do dia:", str(e))
+        return jsonify({"mensagem": "Erro ao calcular vendas do dia."}), 500
