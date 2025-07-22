@@ -37,16 +37,29 @@ function FazerPedido() {
     };
 
     const alterarQuantidade = (produtoId, operacao) => {
-        const novaLista = itensSelecionados.map(item => {
-            if (item.id === produtoId) {
-                const novaQtd = operacao === '+' ? item.quantidade + 1 : item.quantidade - 1;
-                return { ...item, quantidade: novaQtd > 0 ? novaQtd : 1 };
+        const produto = produtos.find(p => p.id === produtoId);
+        const existe = itensSelecionados.find(item => item.id === produtoId);
+
+        let novaLista;
+        if (!existe && operacao === '+') {
+            novaLista = [...itensSelecionados, { ...produto, quantidade: 1 }];
+        } else if (existe) {
+            const novaQtd = operacao === '+' ? existe.quantidade + 1 : existe.quantidade - 1;
+            if (novaQtd <= 0) {
+                novaLista = itensSelecionados.filter(item => item.id !== produtoId);
+            } else {
+                novaLista = itensSelecionados.map(item =>
+                    item.id === produtoId ? { ...item, quantidade: novaQtd } : item
+                );
             }
-            return item;
-        });
+        } else {
+            return; // Evita diminuir quantidade se o item não existe
+        }
+
         setItensSelecionados(novaLista);
         calcularTotal(novaLista);
     };
+
 
     const calcularTotal = (lista) => {
         const soma = lista.reduce((acc, item) => acc + (item.preco * item.quantidade), 0);
@@ -129,13 +142,12 @@ function FazerPedido() {
                                                 <p>{produto.descricao}</p>
                                                 <span>R$ {produto.preco.toFixed(2)}</span>
                                             </div>
-                                            {itemSelecionado && (
-                                                <div className="quantidade-controles" onClick={(e) => e.stopPropagation()}>
-                                                    <button onClick={() => alterarQuantidade(produto.id, '-')}>-</button>
-                                                    <span>{itemSelecionado.quantidade}</span>
-                                                    <button onClick={() => alterarQuantidade(produto.id, '+')}>+</button>
-                                                </div>
-                                            )}
+                                            <div className="quantidade-controles" onClick={(e) => e.stopPropagation()}>
+                                                <button onClick={() => alterarQuantidade(produto.id, '-')}>-</button>
+                                                <span>{itemSelecionado ? itemSelecionado.quantidade : 0}</span>
+                                                <button onClick={() => alterarQuantidade(produto.id, '+')}>+</button>
+                                            </div>
+
                                         </div>
                                     );
                                 })}

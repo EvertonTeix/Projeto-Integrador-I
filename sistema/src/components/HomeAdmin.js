@@ -39,7 +39,7 @@ function HomeAdmin() {
         <div className="home-admin">
             {/* Menu Lateral */}
             <div className="menu-lateral">
-                <h2 className="menu-titulo">Nome</h2>
+                <h2 className="menu-titulo">Administrativo<br/>Buon Gusto</h2>
                 <ul className="menu-opcoes">
                     <li className="menu-item" onClick={() => navigate('/cardapio')}>Cardápio</li>
                     <li className="menu-item" onClick={() => navigate('/vendas')}>Vendas</li>
