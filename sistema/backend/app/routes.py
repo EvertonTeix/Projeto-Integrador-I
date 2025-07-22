@@ -288,8 +288,7 @@ def pedidos_por_funcionario(funcionario_id):
 @main_routes.route('/api/pedidos-completos', methods=['GET'])
 def listar_pedidos_completos():
     try:
-        pedidos = Pedido.query.order_by(Pedido.data_hora.desc()).all()
-
+        pedidos = Pedido.query.order_by(Pedido.data_hora).all()
         pedidos_json = []
         for pedido in pedidos:
             itens = []
