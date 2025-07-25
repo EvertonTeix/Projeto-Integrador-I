@@ -25,6 +25,9 @@ function HomeFunc() {
         <div className="home-funcionario">
             {/* Menu Lateral */}
             <div className="menu-lateral">
+                <div className="imagem-login">
+                    <img src="/logo-buongusto.png" alt="Logo" />
+                </div>
                 <h2 className="menu-titulo">Funcionário</h2>
                 <ul className="menu-opcoes">
                     <li className="menu-item" onClick={() => navigate('/fazer-pedido')}>Fazer Pedido</li>

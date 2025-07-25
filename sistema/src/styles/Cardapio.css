@@ -1,12 +1,7 @@
 /* Estilos Gerais */
 .cardapio-container {
-    display:flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 100vh;
-    background-color: transparent;
-    font-family: Arial, sans-serif;
     padding: 20px;
+    font-family: Arial, sans-serif;
     margin-top: 100px;
 }
 
@@ -25,12 +20,10 @@
     left: 20px; /* Ajuste para não considerar o menu lateral */
     right: 20px;
     z-index: 100;
-    margin-bottom: 60px;
 }
 
 .cardapio-header h2 {
-    margin: 0;
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: #333;
     font-weight: bold;
 }
@@ -173,10 +166,6 @@
 
 .button-remover {
     color: #e74c3c; /* Vermelho */
-}
-
-.conteudo-principal{
-    background-color: transparent;
 }
 
 .button-editar:hover {

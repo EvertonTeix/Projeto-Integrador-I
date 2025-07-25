@@ -4,7 +4,7 @@ display: flex;
     justify-content: center; 
     align-items: center;   
     height: 100vh;        
-    background-color: #f5f5f5; 
+    background-color: #ce0000ce; 
 }
 
 /* Container principal */
@@ -24,23 +24,45 @@ display: flex;
     font-size: 28px;
     color: #333;
     font-weight: 600;
+    margin-bottom: 1px;
+}
+
+.login-container p {
+    font-size: 15px;
+    color: #9c9c9c;
+    margin-bottom: 15px;
 }
 
 /* Formulário */
 .login-form {
     display: flex;
     flex-direction: column;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.login-form label {
+    display: block;        
+    font-weight:bold;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* garante que o label fique à esquerda do input */
 }
 
 /* Campos de entrada */
 .login-input {
     padding: 12px;
-    margin: 10px 0;
+    margin: 3px 0 20px 0;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 16px;
     outline: none;
     transition: border-color 0.3s ease;
+    min-width: 93%;
 }
 
 .login-input:focus {
@@ -50,7 +72,7 @@ display: flex;
 /* Botões */
 .login-button {
     padding: 12px;
-    margin-top: 20px;
+    margin-top: 5px;
     background-color: #333; /* Preto */
     color: #fff;
     border: none;
@@ -86,4 +108,14 @@ display: flex;
 .toggle-button:hover {
     color: #FFD700; /* Amarelo */
     text-decoration: underline;
+}
+
+.imagem-login {
+    text-align: center; /* Para centralizar horizontalmente */
+    margin-bottom: 20px; /* Para dar um espaço entre a imagem e o título */
+}
+
+.imagem-login img {
+    max-width: 50%; /* Faz com que a imagem se ajuste ao tamanho do container */
+    height: auto; /* Mantém a proporção da imagem */
 }

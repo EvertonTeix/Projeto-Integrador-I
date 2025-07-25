@@ -139,7 +139,6 @@ function Cardapio() {
             </header>
 
             {/* Lista de Produtos */}
-            <div className="conteudo-principal">
                 {Object.keys(produtosPorTipo).length > 0 ? (
                     Object.keys(produtosPorTipo).map((tipo) => (
                         <div key={tipo} className="tipo-produto">
@@ -176,7 +175,6 @@ function Cardapio() {
                         <p>Nenhum produto cadastrado.</p>
                     </div>
                 )}
-            </div>
 
             {/* Modal para Adicionar/Editar Produto */}
             {showModal && (

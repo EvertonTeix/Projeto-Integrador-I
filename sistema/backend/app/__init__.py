@@ -11,7 +11,7 @@ def create_app():
     CORS(app)
 
     # Configura o banco de dados
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/sistema_vendas'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Cibelle_2013@localhost/sistema-vendas'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Inicializa o SQLAlchemy com a instância do Flask

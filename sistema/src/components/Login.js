@@ -47,26 +47,37 @@ function Login() {
     return (
         <div className="login-body">
             <div className="login-container">
+                <div className="imagem-login">
+                    <img src="/logo-buongusto.png" alt="Logo" />
+                </div>
                 <h1>Login</h1>
+                <p>Entre com suas credenciais para acessar o sistema</p>
                 <form onSubmit={handleLogin} className="login-form">
+                <div className="input-group">
+                    <label htmlFor="email">E-mail</label>
                     <input
-                        type="email"
-                        placeholder="E-mail"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="login-input"
-                        required
+                    type="email"
+                    placeholder="Digite seu e-mail"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="login-input"
+                    required
                     />
+                </div>
+                <div className="input-group">
+                    <label htmlFor="senha">Senha</label>
                     <input
-                        type="password"
-                        placeholder="Senha"
-                        value={senha}
-                        onChange={(e) => setSenha(e.target.value)}
-                        className="login-input"
-                        required
+                    type="password"
+                    placeholder="Digite sua senha"
+                    value={senha}
+                    onChange={(e) => setSenha(e.target.value)}
+                    className="login-input"
+                    required
                     />
-                    <button type="submit" className="login-button">Entrar</button>
+                </div>
+                <button type="submit" className="login-button">Entrar</button>
                 </form>
+
                 {mensagem && <p className="login-mensagem">{mensagem}</p>}
             </div>
         </div>
