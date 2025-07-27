@@ -29,17 +29,34 @@ function Recibo() {
                 <hr />
                 <ul>
                     {pedido.itens.map((item, idx) => (
-                        <li key={idx}>{item.quantidade}x {item.produto} - R$ {item.preco_unitario.toFixed(2)}</li>
+                        <li key={idx}>{item.quantidade}x {item.tipo} de {item.nome} - R$ {item.preco_unitario.toFixed(2)}</li>
                     ))}
                 </ul>
                 <hr />
+                <table className="resumo-itens-table">
+                    <tbody>
+                        { (
+                            <>
+                                <tr>
+                                    <td><strong>Total de Esfihas</strong></td>
+                                    <td>{pedido.total_esfihas ?? 0}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Total de Pizzas</strong></td>
+                                    <td>{pedido.total_pizzas ?? 0}</td>
+                                </tr>
+                            </>
+                            )
+                        }
+                    </tbody>
+                </table>
                 <h3>Total: R$ {pedido.total.toFixed(2)}</h3>
                 <button className="button no-print" onClick={() => window.print()}>Imprimir</button>
             </div>
-            <div> 
-                <button className="button voltar no-print" onClick={() => navigate('/vendas')}>
-                        Voltar
-                    </button>  
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
+                <button className="button voltar no-print" onClick={() => navigate('/meus-pedidos')}>
+                Voltar
+            </button>  
             </div>
         </div>
         

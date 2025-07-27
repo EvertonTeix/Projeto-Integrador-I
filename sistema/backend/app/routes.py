@@ -290,28 +290,47 @@ def listar_pedidos_completos():
     try:
         pedidos = Pedido.query.order_by(Pedido.data_hora).all()
         pedidos_json = []
+
         for pedido in pedidos:
+            itens_pedido = ItemPedido.query.filter_by(pedido_id=pedido.id).all()
             itens = []
-            for item in pedido.itens:
+            total_esfihas = 0
+            total_pizzas = 0
+
+            for item in itens_pedido:
+                produto = Produto.query.filter_by(id=item.produto_id).first()
+                if not produto:
+                    continue  # ou retorne erro
+
                 itens.append({
-                    "produto": item.produto.nome,
+                    "tipo": produto.tipo,
+                    "nome": produto.nome,
                     "quantidade": item.quantidade,
                     "preco_unitario": item.preco_unitario,
                     "subtotal": round(item.quantidade * item.preco_unitario, 2)
                 })
+
+                if produto.tipo == "Pizza":
+                    total_pizzas += item.quantidade
+                else:
+                    total_esfihas += item.quantidade
 
             pedidos_json.append({
                 "id": pedido.id,
                 "data_hora": pedido.data_hora.strftime("%d/%m/%Y %H:%M"),
                 "funcionario": pedido.funcionario.nome,
                 "total": round(pedido.total, 2),
+                "total_esfihas": total_esfihas,
+                "total_pizzas": total_pizzas,
                 "itens": itens
             })
 
         return jsonify(pedidos_json), 200
+
     except Exception as e:
         print("Erro ao listar pedidos completos:", str(e))
         return jsonify({"mensagem": "Erro ao listar pedidos."}), 500
+
 
 @main_routes.route('/api/vendas/hoje', methods=['GET'])
 def vendas_do_dia():
