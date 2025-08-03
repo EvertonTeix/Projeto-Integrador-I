@@ -17,6 +17,24 @@ function Recibo() {
             .catch(err => console.error("Erro:", err));
     }, [id]);
 
+    const handleImpressaoTermica = () => {
+        fetch('http://localhost:5000/api/imprimir-recibo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(pedido)
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message);
+        })
+        .catch(err => {
+            console.error("Erro ao imprimir:", err);
+            alert("Erro ao tentar imprimir na impressora térmica.");
+        });
+    };
+
     if (!pedido) return <div>Carregando pedido...</div>;
 
     return (
@@ -29,37 +47,37 @@ function Recibo() {
                 <hr />
                 <ul>
                     {pedido.itens.map((item, idx) => (
-                        <li key={idx}>{item.quantidade}x {item.tipo} de {item.nome} - R$ {item.preco_unitario.toFixed(2)}</li>
+                        <li key={idx}>
+                            {item.quantidade}x {item.tipo} de {item.nome} - R$ {item.preco_unitario.toFixed(2)}
+                        </li>
                     ))}
                 </ul>
                 <hr />
                 <table className="resumo-itens-table">
                     <tbody>
-                        { (
-                            <>
-                                <tr>
-                                    <td><strong>Total de Esfihas</strong></td>
-                                    <td>{pedido.total_esfihas ?? 0}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Total de Pizzas</strong></td>
-                                    <td>{pedido.total_pizzas ?? 0}</td>
-                                </tr>
-                            </>
-                            )
-                        }
+                        <tr>
+                            <td><strong>Total de Esfihas</strong></td>
+                            <td>{pedido.total_esfihas ?? 0}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total de Pizzas</strong></td>
+                            <td>{pedido.total_pizzas ?? 0}</td>
+                        </tr>
                     </tbody>
                 </table>
                 <h3>Total: R$ {pedido.total.toFixed(2)}</h3>
-                <button className="button no-print" onClick={() => window.print()}>Imprimir</button>
+
+                {/* Botão novo para impressão térmica */}
+                <button className="button no-print" onClick={handleImpressaoTermica}>
+                    Imprimir via Térmica
+                </button>
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
                 <button className="button voltar no-print" onClick={() => navigate('/meus-pedidos')}>
-                Voltar
-            </button>  
+                    Voltar
+                </button>  
             </div>
         </div>
-        
     );
 }
 

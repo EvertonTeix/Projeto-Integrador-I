@@ -3,6 +3,8 @@ from . import db
 from .models import Usuario, Produto, Tipos, Pedido, ItemPedido
 import hashlib
 from datetime import datetime
+from flask import request, jsonify
+from escpos.printer import Usb
 
 main_routes = Blueprint('main', __name__)
 
@@ -349,3 +351,42 @@ def vendas_do_dia():
     except Exception as e:
         print("Erro ao calcular vendas do dia:", str(e))
         return jsonify({"mensagem": "Erro ao calcular vendas do dia."}), 500
+
+
+@main_routes.route('/api/imprimir-recibo', methods=['POST'])
+def imprimir_recibo():
+    pedido = request.get_json()
+
+    try:
+        # Substitua pelos valores corretos da sua impressora
+        printer = Usb(0x0416, 0x5011)
+
+        printer.set(align='center', bold=True, width=2, height=2)
+        printer.text("Esfiharia Buon Gusto\n\n")
+        printer.set(align='center', bold=False, width=1, height=1)
+        printer.text(f"Pedido #{pedido['id']}\n")
+        printer.text(f"Data: {pedido['data_hora']}\n")
+        printer.text(f"Funcionário: {pedido['funcionario']}\n")
+        printer.text("-" * 42 + "\n")
+        printer.set(align='left')
+
+        for item in pedido['itens']:
+            nome = f"{item['quantidade']}x {item['tipo']} de {item['nome']}"
+            preco = f"R$ {item['preco_unitario']:.2f}  Sub: R$ {item['subtotal']:.2f}"
+            printer.text(f"{nome}\n")
+            printer.text(f"{preco}\n")
+
+        printer.text("-" * 42 + "\n")
+        printer.text(f"Total de Esfihas: {pedido.get('total_esfihas', 0)}\n")
+        printer.text(f"Total de Pizzas: {pedido.get('total_pizzas', 0)}\n")
+        printer.text(f"TOTAL: R$ {pedido['total']:.2f}\n")
+        printer.text("-" * 42 + "\n")
+        printer.set(align='center')
+        printer.text("Obrigado pela preferência!\n\n")
+        printer.cut()
+
+        return jsonify({"success": True, "message": "Recibo impresso com sucesso."}), 200
+
+    except Exception as e:
+        print("Erro na impressão:", e)
+        return jsonify({"success": False, "message": "Erro ao imprimir recibo."}), 500
