@@ -83,3 +83,9 @@
     font-style: italic;
     margin-top: 20px;
 }
+
+.button-resetar {
+    background-color: #FFD700;
+    color: #333;
+    margin-left: 10px;
+}

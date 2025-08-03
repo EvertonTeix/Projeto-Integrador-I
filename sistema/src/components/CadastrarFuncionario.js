@@ -9,19 +9,20 @@ function CadastrarFuncionario() {
     const [funcionarios, setFuncionarios] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
 
-    // Função para buscar funcionários do banco de dados
+
     const buscarFuncionarios = async () => {
         try {
             const response = await fetch('http://localhost:5000/api/funcionarios');
             const data = await response.json();
-            setFuncionarios(data); // Atualiza a lista de funcionários
+            setFuncionarios(data);
         } catch (error) {
             console.error('Erro ao buscar funcionários:', error);
         }
     };
 
-    // Buscar funcionários ao carregar o componente
     useEffect(() => {
         buscarFuncionarios();
     }, []);
@@ -37,13 +38,10 @@ function CadastrarFuncionario() {
                 body: JSON.stringify({ nome, email, senha }),
             });
             if (response.ok) {
-                // Limpa os campos do formulário
                 setNome('');
                 setEmail('');
                 setSenha('');
-                setShowModal(false); // Fecha o modal
-
-                // Busca os funcionários atualizados do banco de dados
+                setShowModal(false);
                 buscarFuncionarios();
             }
         } catch (error) {
@@ -51,9 +49,40 @@ function CadastrarFuncionario() {
         }
     };
 
+    const removerFuncionario = async (id) => {
+        if (!window.confirm('Tem certeza que deseja remover este funcionário?')) return;
+        try {
+            const response = await fetch(`http://localhost:5000/funcionario/deletar/${id}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                buscarFuncionarios();
+            }
+        } catch (error) {
+            console.error('Erro ao remover funcionário:', error);
+        }
+    };
+
+    const resetarSenha = async (id) => {
+    if (!window.confirm('Deseja redefinir a senha para a senha padrão?')) return;
+    try {
+        const response = await fetch(`http://localhost:5000/api/funcionarios/${id}/redefinir-senha`, { method: 'PUT' })
+
+        if (response.ok) {
+        setSuccessMessage('Senha redefinida com sucesso para senha padrão.');
+        setShowSuccessModal(true);
+        }
+    } catch (error) {
+        console.error('Erro ao resetar senha:', error);
+    }
+    };
+
+
+
+
     return (
         <div className="cadastrar-funcionario-container">
-            {/* Cabeçalho */}
             <header className="cabecalho-header">
                 <h2>Funcionários</h2>
                 <div className="botoes-cabecalho">
@@ -66,7 +95,6 @@ function CadastrarFuncionario() {
                 </div>
             </header>
 
-            {/* Lista de Funcionários Cadastrados */}
             <div className="lista-funcionarios">
                 <h2>Funcionários Cadastrados</h2>
                 {funcionarios.length > 0 ? (
@@ -75,6 +103,7 @@ function CadastrarFuncionario() {
                             <tr>
                                 <th>Nome</th>
                                 <th>E-mail</th>
+                                <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -82,6 +111,14 @@ function CadastrarFuncionario() {
                                 <tr key={funcionario.id}>
                                     <td>{funcionario.nome}</td>
                                     <td>{funcionario.email}</td>
+                                    <td>
+                                        <button className="button-remover" onClick={() => removerFuncionario(funcionario.id)}>
+                                            Remover
+                                        </button>
+                                        <button className="button-editar" onClick={() => resetarSenha(funcionario.id)}>
+                                            Resetar Senha
+                                        </button>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
@@ -91,7 +128,6 @@ function CadastrarFuncionario() {
                 )}
             </div>
 
-            {/* Modal para Cadastrar Funcionário */}
             {showModal && (
                 <div className="modal">
                     <div className="modal-content">

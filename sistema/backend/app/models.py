@@ -25,7 +25,12 @@ class Pedido(db.Model):
     funcionario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
     data_hora = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     total = db.Column(db.Float, nullable=False)
-    itens = db.relationship('ItemPedido', backref='pedido', lazy=True)  # Relação com ItemPedido
+    nome = db.Column(db.String(100), nullable=True)  # Nome do cliente
+    endereco = db.Column(db.String(255), nullable=True)  # Endereço de entrega (se houver)
+    forma_pagamento = db.Column(db.String(50), nullable=False)  # Ex: 'pix', 'dinheiro', 'cartao'
+
+    itens = db.relationship('ItemPedido', backref='pedido', lazy=True)
+
 
 class ItemPedido(db.Model):
     __tablename__ = 'itens_pedido'

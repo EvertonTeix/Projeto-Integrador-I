@@ -5,6 +5,8 @@ import hashlib
 from datetime import datetime
 from flask import request, jsonify
 from escpos.printer import Usb
+from datetime import datetime
+from zoneinfo import ZoneInfo  # Requer Python 3.9+
 
 main_routes = Blueprint('main', __name__)
 
@@ -224,68 +226,89 @@ def listar_tipos():
     except Exception as e:
         return jsonify({"mensagem": "Erro ao listar tipos.", "erro": str(e)}), 500
 
-
+from datetime import datetime
+from zoneinfo import ZoneInfo  # Python 3.9+
+from flask import jsonify, request
+from sqlalchemy.exc import SQLAlchemyError
 
 @main_routes.route('/api/pedidos', methods=['POST'])
 def fazer_pedido():
     try:
+        # Verificação básica do content-type
         if not request.is_json:
             return jsonify({"mensagem": "O cabeçalho Content-Type deve ser application/json."}), 415
 
         dados = request.json
 
-        funcionario_id = dados.get('funcionario_id')
-        produtos = dados.get('produtos', [])
-        total = dados.get('total')
+        # Validação dos campos obrigatórios
+        campos_obrigatorios = {
+            'funcionario_id': 'ID do funcionário',
+            'produtos': 'Lista de produtos',
+            'total': 'Valor total',
+            'nome': 'Nome do cliente',
+            'forma_pagamento': 'Forma de pagamento'
+        }
 
-        if not funcionario_id or not produtos or total is None:
-            return jsonify({"mensagem": "Campos obrigatórios ausentes (funcionario_id, produtos, total)."}), 400
+        faltantes = [campo for campo, desc in campos_obrigatorios.items() if campo not in dados or dados[campo] is None]
+        if faltantes:
+            return jsonify({
+                "mensagem": "Campos obrigatórios ausentes.",
+                "campos_faltantes": faltantes
+            }), 400
 
-        # Cria o pedido
-        novo_pedido = Pedido(
-            funcionario_id=funcionario_id,
-            data_hora=datetime.utcnow(),
-            total=total
+        # Tratamento da data/hora
+        data_hora = (
+            datetime.fromisoformat(dados['data_hora']) 
+            if 'data_hora' in dados and dados['data_hora']
+            else datetime.now(ZoneInfo("America/Sao_Paulo"))
         )
+
+        # Criação do pedido
+        novo_pedido = Pedido(
+            funcionario_id=dados['funcionario_id'],
+            total=float(dados['total']),
+            nome=dados['nome'],
+            endereco=dados.get('endereco'),
+            forma_pagamento=dados['forma_pagamento'],
+            data_hora=data_hora
+        )
+
         db.session.add(novo_pedido)
-        db.session.flush()  # Garante que novo_pedido.id esteja disponível
+        db.session.flush()
 
-        # Adiciona os itens do pedido
-        for item in produtos:
+        # Adição dos itens do pedido
+        for item in dados['produtos']:
+            if not all(k in item for k in ['id', 'quantidade']):
+                db.session.rollback()
+                return jsonify({"mensagem": "Item de pedido inválido."}), 400
+
             produto = Produto.query.get(item['id'])
-            if not produto:
-                continue  # ignora produtos inválidos
-
-            item_pedido = ItemPedido(
-                pedido_id=novo_pedido.id,
-                produto_id=produto.id,
-                quantidade=item.get('quantidade', 1),
-                preco_unitario=produto.preco
-            )
-            db.session.add(item_pedido)
+            if produto:
+                db.session.add(ItemPedido(
+                    pedido_id=novo_pedido.id,
+                    produto_id=produto.id,
+                    quantidade=item['quantidade'],
+                    preco_unitario=produto.preco
+                ))
 
         db.session.commit()
 
-        return jsonify({"mensagem": "Pedido realizado com sucesso!"}), 201
+        return jsonify({
+            "mensagem": "Pedido realizado com sucesso!",
+            "pedido_id": novo_pedido.id,
+            "data_hora": data_hora.isoformat()
+        }), 201
 
+    except ValueError as e:
+        db.session.rollback()
+        return jsonify({"mensagem": f"Erro de formato: {str(e)}"}), 400
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({"mensagem": "Erro no banco de dados.", "erro": str(e)}), 500
     except Exception as e:
         db.session.rollback()
-        print("Erro ao fazer pedido:", str(e))
-        return jsonify({"mensagem": "Erro ao fazer pedido.", "erro": str(e)}), 500
-
-@main_routes.route('/api/pedidos/funcionario/<int:funcionario_id>', methods=['GET'])
-def pedidos_por_funcionario(funcionario_id):
-    try:
-        pedidos = Pedido.query.filter_by(funcionario_id=funcionario_id).all()
-        pedidos_json = [{
-            "id": p.id,
-            "data_hora": p.data_hora,
-            "total": p.total
-        } for p in pedidos]
-        return jsonify(pedidos_json), 200
-    except Exception as e:
-        return jsonify({"mensagem": "Erro ao buscar pedidos.", "erro": str(e)}), 500
-
+        return jsonify({"mensagem": "Erro interno no servidor.", "erro": str(e)}), 500
+    
 
 @main_routes.route('/api/pedidos-completos', methods=['GET'])
 def listar_pedidos_completos():
@@ -390,3 +413,59 @@ def imprimir_recibo():
     except Exception as e:
         print("Erro na impressão:", e)
         return jsonify({"success": False, "message": "Erro ao imprimir recibo."}), 500
+
+@main_routes.route('/funcionario/deletar/<int:id>', methods=['DELETE'])
+def deletar_funcionario(id):
+    try:
+        # Busca o usuario pelo ID
+        usuario = Usuario.query.get(id)
+        if not usuario:
+            return jsonify({"mensagem": "usuario não encontrado."}), 404
+
+        # Remove o usuario do banco de dados
+        db.session.delete(usuario)
+        db.session.commit()
+
+        return jsonify({"mensagem": "usuario deletado com sucesso!"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"mensagem": "Erro ao deletar usuario.", "erro": str(e)}), 500
+
+    
+@main_routes.route('/api/funcionarios/<int:id>/redefinir-senha', methods=['PUT'])
+def redefinir_senha_funcionario(id):
+    try:
+        funcionario = Usuario.query.get(id)
+        if not funcionario or funcionario.tipo != 'funcionario':
+            return jsonify({"mensagem": "Funcionário não encontrado."}), 404
+
+        nova_senha = 'funcionario123'
+        funcionario.senha = hashlib.sha256(nova_senha.encode()).hexdigest()
+        db.session.commit()
+        return jsonify({"mensagem": f"Senha redefinida para: {nova_senha}"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"mensagem": "Erro ao redefinir senha.", "erro": str(e)}), 500
+
+@main_routes.route('/api/funcionarios/<int:id>/alterar-senha', methods=['PUT'])
+def alterar_senha_funcionario(id):
+    try:
+        funcionario = Usuario.query.get(id)
+        if not funcionario or funcionario.tipo != 'funcionario':
+            return jsonify({"mensagem": "Funcionário não encontrado."}), 404
+
+        data = request.get_json()
+        nova_senha = data.get('senha')
+
+        if not nova_senha or len(nova_senha.strip()) == 0:
+            return jsonify({"mensagem": "A nova senha é obrigatória."}), 400
+
+        # Hash da nova senha (SHA256)
+        funcionario.senha = hashlib.sha256(nova_senha.encode()).hexdigest()
+
+        db.session.commit()
+        return jsonify({"mensagem": "Senha alterada com sucesso."}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"mensagem": "Erro ao alterar senha.", "erro": str(e)}), 500
