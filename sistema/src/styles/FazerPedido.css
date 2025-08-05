@@ -2,9 +2,6 @@
 .pedido-container {
     margin-top: 100px;
     padding: 20px;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 /* Cabeçalho fixo */
@@ -17,7 +14,6 @@
     height: 80px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     position: fixed;
-    top: 20px;
     left: 20px;
     right: 20px;
     z-index: 100;
@@ -32,24 +28,46 @@
 }
 
 /* Layout de conteúdo */
-.pedido-content {
-    display: grid;
-    grid-template-columns: 1fr 350px;
-    gap: 30px;
-    margin-top: 30px;
+/* Área principal para grid de busca e itens */
+.pedido-area {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    grid-template-columns: 1fr 500px; /* esquerda e direita */
+    gap: 20px;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-top: 10px; /* igual ou maior que a altura do header fixo */
+    box-sizing: border-box;
+}
+
+/* Barra lateral de busca fixa */
+.busca-produtos {
+    position: sticky;
+    justify-content: flex-start;
+    top: 120px; /* abaixo do header fixo */
+    align-self: flex-start;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 25px 20px 20px 20px;
+    z-index: 10;
+    min-width: 0;
+    width: 100%;
+    height: 650px;
+    margin: 0;
+    box-sizing: border-box;
+    overflow-y: auto;
 }
 
 /* Barra de busca */
 .search-input {
-    padding: 12px 20px;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 25px;
     font-size: 16px;
-    border: 1px solid #e0e0e0;
-    border-radius: 30px;
-    width: 100%;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    transition: all 0.3s;
-    margin-right: auto;
+    width: 270px;
+    margin: 0 0 20px 0;
 }
 
 .search-input:focus {
@@ -103,12 +121,12 @@
 .produto-item h4 {
     margin: 0 0 8px 0;
     color: #333;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     font-weight: 600;
 }
 
 .produto-item p {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: #777;
     margin: 0 0 12px 0;
     flex-grow: 1;
@@ -136,17 +154,21 @@
 
 /* Painel de itens selecionados - Maior */
 .itens-selecionados {
+    position: sticky;
+    top: 140px;
     background: #fff;
     border-radius: 15px;
     padding: 30px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    height: fit-content;
-    position: sticky;
-    top: 140px;
-    /* Novas propriedades para aumentar para a direita */
-    width: 500px; /* ou o valor desejado (400px, 450px etc) */
-    margin-left: auto; /* empurra para a direita */
-    margin-right: 20px; /* espaçamento da borda direita */
+    width: 650px;
+    height: 650px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    flex-shrink: 0;
+    margin: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
 }
 
 .itens-selecionados h3 {
@@ -217,6 +239,7 @@
     cursor: pointer;
     font-size: 1.2rem;
     margin-left: 20px;
+    margin-right: 10px;
     transition: all 0.2s;
     padding: 5px;
 }
@@ -231,6 +254,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: auto;
 }
 
 .total-pedido h3 {
@@ -463,14 +487,73 @@
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
+/* Estilos para o campo de observação */
+.form-group textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* Estilos para exibição das observações */
+.item-pedido {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.item-info {
+  flex-grow: 1;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.item-observacao {
+  margin-top: 5px;
+  color: #666;
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+.cliente-modal textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+    min-height: 60px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
-    .pedido-content {
-        grid-template-columns: 1fr;
-    }
     
     .itens-selecionados {
         position: static;
         margin-top: 30px;
+    }
+
+    .busca-produtos {
+        position: static;
+        max-height: none;
+        box-shadow: none;
+        padding: 10px 0;
     }
 }

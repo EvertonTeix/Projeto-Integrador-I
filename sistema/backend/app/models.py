@@ -28,7 +28,7 @@ class Pedido(db.Model):
     nome = db.Column(db.String(100), nullable=True)  # Nome do cliente
     endereco = db.Column(db.String(255), nullable=True)  # Endereço de entrega (se houver)
     forma_pagamento = db.Column(db.String(50), nullable=False)  # Ex: 'pix', 'dinheiro', 'cartao'
-
+    observacao = db.Column(db.Text, nullable=True)  # Nova coluna para observações gerais
     itens = db.relationship('ItemPedido', backref='pedido', lazy=True)
 
 
@@ -39,6 +39,7 @@ class ItemPedido(db.Model):
     produto_id = db.Column(db.Integer, db.ForeignKey('produtos.id'), nullable=False)
     quantidade = db.Column(db.Integer, nullable=False)
     preco_unitario = db.Column(db.Float, nullable=False)
+    observacao = db.Column(db.String(200))
 
 class Tipos(db.Model):
     __tablename__ = 'tipos'

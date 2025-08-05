@@ -1,75 +1,96 @@
-import React, { useEffect, useState } from 'react';
-import '../styles/ConsultarCardapio.css';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../styles/ConsultarCardapio.css';
 
 function ConsultarCardapio() {
-    const [produtos, setProdutos] = useState([]);
-    const [termoBusca, setTermoBusca] = useState('');
     const navigate = useNavigate();
+    const [produtos, setProdutos] = useState([]);
+    const [tipos, setTipos] = useState([]);
+    const [abaAtiva, setAbaAtiva] = useState('');
 
     useEffect(() => {
-        buscarProdutos();
+        const carregarDados = async () => {
+            try {
+                const [produtosRes, tiposRes] = await Promise.all([
+                    fetch('http://localhost:5000/api/produtos'),
+                    fetch('http://localhost:5000/api/tipos')
+                ]);
+                
+                const dataProdutos = await produtosRes.json();
+                const dataTipos = await tiposRes.json();
+                
+                setProdutos(dataProdutos || []);
+                
+                if (dataTipos && Array.isArray(dataTipos)) {
+                    const tiposOrdenados = [...dataTipos].sort((a, b) => a.nome.localeCompare(b.nome));
+                    setTipos(tiposOrdenados);
+                    
+                    if (tiposOrdenados.length > 0) {
+                        setAbaAtiva(tiposOrdenados[0].nome);
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+            }
+        };
+        
+        carregarDados();
     }, []);
 
-    const buscarProdutos = async () => {
-        try {
-            const response = await fetch('http://localhost:5000/api/produtos');
-            const data = await response.json();
-            setProdutos(data);
-        } catch (error) {
-            console.error('Erro ao buscar produtos:', error);
-        }
-    };
-
-    const produtosFiltrados = produtos.filter(produto =>
-        produto.nome.toLowerCase().includes(termoBusca.toLowerCase()) ||
-        produto.tipo.toLowerCase().includes(termoBusca.toLowerCase())
-    );
-
-    const produtosPorTipo = produtosFiltrados.reduce((acc, produto) => {
-        if (!acc[produto.tipo]) acc[produto.tipo] = [];
-        acc[produto.tipo].push(produto);
-        return acc;
-    }, {});
+    const produtosFiltrados = produtos.filter(produto => produto.tipo === abaAtiva);
 
     return (
-        <div className="consultar-container">
-            <header className="consultar-header">
+        <div className="cardapio-container">
+            <header className="cardapio-header">
                 <h2>Cardápio</h2>
-                <input
-                    type="text"
-                    placeholder="Buscar produto..."
-                    value={termoBusca}
-                    onChange={(e) => setTermoBusca(e.target.value)}
-                    className="search-input"
-                />
+                <button className="button voltar" onClick={() => navigate('/funcionario')}>
+                    Voltar
+                </button>
             </header>
 
-            <div className="produtos-por-tipo">
-                {Object.keys(produtosPorTipo).length > 0 ? (
-                    Object.keys(produtosPorTipo).map((tipo) => (
-                        <div key={tipo} className="tipo-section-func">
-                            <h3>{tipo.charAt(0).toUpperCase() + tipo.slice(1)}</h3>
-                            <div className="coluna-produtos">
-                                {produtosPorTipo[tipo].map((produto) => (
-                                    <div key={produto.id} className="cardapio-item">
-                                        <h4>{produto.nome}</h4>
-                                        <p>{produto.descricao}</p>
-                                        <span>R$ {produto.preco.toFixed(2)}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    ))
-                ) : (
-                    <p>Nenhum produto encontrado.</p>
-                )}
+            <div className="abas-container">
+                {tipos.map(tipo => (
+                    <div key={tipo.id} className="aba-wrapper">
+                        <button
+                            className={`aba ${abaAtiva === tipo.nome ? 'ativa' : ''}`}
+                            onClick={() => setAbaAtiva(tipo.nome)}
+                        >
+                            {tipo.nome}
+                        </button>
+                    </div>
+                ))}
             </div>
-            <div className="pedido-footer-func">
-                <button className="button voltar" onClick={() => navigate('/funcionario')}>Voltar</button>
+
+            <div className="conteudo-aba">
+                {produtosFiltrados.length > 0 ? (
+                    <table className="produtos-table">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nome</th>
+                                <th>Descrição</th>
+                                <th>Preço</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {produtosFiltrados.map(produto => (
+                                <tr key={produto.id}>
+                                    <td>#{produto.id}</td>
+                                    <td>{produto.nome}</td>
+                                    <td>{produto.descricao}</td>
+                                    <td>R$ {parseFloat(produto.preco).toFixed(2)}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <div className="sem-produtos">
+                        <p>Nenhum produto encontrado nesta categoria.</p>
+                    </div>
+                )}
             </div>
         </div>
     );
 }
 
-export default ConsultarCardapio; 
+export default ConsultarCardapio;

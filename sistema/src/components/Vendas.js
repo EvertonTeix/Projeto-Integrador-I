@@ -11,7 +11,7 @@ function Vendas() {
     useEffect(() => {
         fetch('http://localhost:5000/api/pedidos-completos')
             .then(res => res.json())
-            .then(setFilaPedidos)
+            .then(data => setFilaPedidos(Array.isArray(data) ? data : []))
             .catch(err => console.error("Erro:", err));
     }, []);
 

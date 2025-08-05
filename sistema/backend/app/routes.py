@@ -103,24 +103,31 @@ def testar_conexao():
     except Exception as e:
         return jsonify({"mensagem": f"Erro ao conectar ao banco de dados: {str(e)}"}), 500
     
-# Rota para adicionar um produto
 @main_routes.route('/api/produtos', methods=['POST'])
 def adicionar_produto():
     dados = request.json
-    print("Dados recebidos:", dados)  # Log dos dados recebidos
     try:
         novo_produto = Produto(
             nome=dados['nome'],
-            descricao=dados.get('descricao', ''),  # Descrição é opcional
+            descricao=dados.get('descricao', ''),
             preco=dados['preco'],
             tipo=dados['tipo']
         )
         db.session.add(novo_produto)
         db.session.commit()
-        return jsonify({"mensagem": "Produto adicionado com sucesso!"}), 201
+        
+        # Retorna o produto criado com status 201
+        return jsonify({
+            "id": novo_produto.id,
+            "nome": novo_produto.nome,
+            "descricao": novo_produto.descricao,
+            "preco": novo_produto.preco,
+            "tipo": novo_produto.tipo
+        }), 201
+        
     except Exception as e:
-        print("Erro ao adicionar produto:", str(e))  # Log de erro
-        return jsonify({"mensagem": "Erro ao adicionar produto"}), 500
+        db.session.rollback()
+        return jsonify({"mensagem": f"Erro ao adicionar produto: {str(e)}"}), 500
 
 # Rota para listar todos os produtos
 @main_routes.route('/api/produtos', methods=['GET'])
@@ -152,7 +159,6 @@ def deletar_produto(id):
         db.session.rollback()
         return jsonify({"mensagem": "Erro ao deletar produto.", "erro": str(e)}), 500
 
-#Editar produtos
 @main_routes.route('/api/produtos/<int:id>', methods=['PUT'])
 def editar_produto(id):
     try:
@@ -176,7 +182,15 @@ def editar_produto(id):
         # Salva as alterações no banco de dados
         db.session.commit()
 
-        return jsonify({"mensagem": "Produto atualizado com sucesso!"}), 200
+        # Retorna o objeto completo atualizado no mesmo formato da rota GET
+        return jsonify({
+            "id": produto.id,
+            "nome": produto.nome,
+            "descricao": produto.descricao,
+            "preco": produto.preco,
+            "tipo": produto.tipo
+        }), 200
+
     except Exception as e:
         db.session.rollback()
         return jsonify({"mensagem": "Erro ao atualizar produto.", "erro": str(e)}), 500
@@ -185,33 +199,30 @@ def editar_produto(id):
 def adicionar_tipo():
     dados = request.json
 
-    # Verifica se o campo 'nome' foi enviado no JSON
     if 'nome' not in dados:
         return jsonify({"mensagem": "O campo 'nome' é obrigatório!"}), 400
 
-    nome = dados['nome'].strip()  # Remove espaços em branco no início e no final
+    nome = dados['nome'].strip()
 
-    # Verifica se o nome não está vazio
     if not nome:
         return jsonify({"mensagem": "O campo 'nome' não pode estar vazio!"}), 400
 
     try:
-        # Verifica se o tipo já existe no banco de dados
         tipo_existente = Tipos.query.filter_by(nome=nome).first()
         if tipo_existente:
             return jsonify({"mensagem": "Este tipo já existe!"}), 409
 
-        # Cria um novo tipo
         novo_tipo = Tipos(nome=nome)
-
-        # Adiciona e commita no banco de dados
         db.session.add(novo_tipo)
         db.session.commit()
 
-        return jsonify({"mensagem": "Tipo adicionado com sucesso!", "id": novo_tipo.id}), 201
+        # Retorna o objeto completo do tipo criado
+        return jsonify({
+            "id": novo_tipo.id,
+            "nome": novo_tipo.nome
+        }), 201
 
     except Exception as e:
-        # Em caso de erro, faz rollback e retorna uma mensagem de erro
         db.session.rollback()
         return jsonify({"mensagem": "Erro ao adicionar tipo.", "erro": str(e)}), 500
     
@@ -263,33 +274,39 @@ def fazer_pedido():
             else datetime.now(ZoneInfo("America/Sao_Paulo"))
         )
 
-        # Criação do pedido
+        # Criação do pedido (com observação)
         novo_pedido = Pedido(
             funcionario_id=dados['funcionario_id'],
             total=float(dados['total']),
             nome=dados['nome'],
             endereco=dados.get('endereco'),
             forma_pagamento=dados['forma_pagamento'],
-            data_hora=data_hora
+            data_hora=data_hora,
+            observacao=dados.get('observacao')  # Nova linha para a observação geral
         )
 
         db.session.add(novo_pedido)
         db.session.flush()
 
-        # Adição dos itens do pedido
+        # Adição dos itens do pedido (com observação)
         for item in dados['produtos']:
             if not all(k in item for k in ['id', 'quantidade']):
                 db.session.rollback()
                 return jsonify({"mensagem": "Item de pedido inválido."}), 400
 
             produto = Produto.query.get(item['id'])
-            if produto:
-                db.session.add(ItemPedido(
-                    pedido_id=novo_pedido.id,
-                    produto_id=produto.id,
-                    quantidade=item['quantidade'],
-                    preco_unitario=produto.preco
-                ))
+            if not produto:
+                db.session.rollback()
+                return jsonify({"mensagem": f"Produto com ID {item['id']} não encontrado."}), 404
+
+            novo_item = ItemPedido(
+                pedido_id=novo_pedido.id,
+                produto_id=produto.id,
+                quantidade=item['quantidade'],
+                preco_unitario=produto.preco,
+                observacao=item.get('observacao')  # Campo de observação do item
+            )
+            db.session.add(novo_item)
 
         db.session.commit()
 
@@ -308,7 +325,6 @@ def fazer_pedido():
     except Exception as e:
         db.session.rollback()
         return jsonify({"mensagem": "Erro interno no servidor.", "erro": str(e)}), 500
-    
 
 @main_routes.route('/api/pedidos-completos', methods=['GET'])
 def listar_pedidos_completos():
@@ -332,7 +348,8 @@ def listar_pedidos_completos():
                     "nome": produto.nome,
                     "quantidade": item.quantidade,
                     "preco_unitario": item.preco_unitario,
-                    "subtotal": round(item.quantidade * item.preco_unitario, 2)
+                    "subtotal": round(item.quantidade * item.preco_unitario, 2),
+                    "observacao": item.observacao  # Observação do item
                 })
 
                 if produto.tipo == "Pizza":
@@ -347,6 +364,7 @@ def listar_pedidos_completos():
                 "total": round(pedido.total, 2),
                 "total_esfihas": total_esfihas,
                 "total_pizzas": total_pizzas,
+                "observacao": pedido.observacao,  # Observação geral do pedido
                 "itens": itens
             })
 
@@ -469,3 +487,68 @@ def alterar_senha_funcionario(id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"mensagem": "Erro ao alterar senha.", "erro": str(e)}), 500
+    
+
+@main_routes.route('/api/tipos/<int:id>', methods=['PUT'])
+def editar_tipo(id):
+    try:
+        tipo = Tipos.query.get(id)
+        if not tipo:
+            return jsonify({"mensagem": "Tipo não encontrado."}), 404
+
+        dados = request.json
+
+        if 'nome' not in dados:
+            return jsonify({"mensagem": "O campo 'nome' é obrigatório!"}), 400
+
+        novo_nome = dados['nome'].strip()
+
+        if not novo_nome:
+            return jsonify({"mensagem": "O campo 'nome' não pode estar vazio!"}), 400
+
+        # Verifica se o nome já existe (excluindo o atual)
+        if Tipos.query.filter(Tipos.nome == novo_nome, Tipos.id != id).first():
+            return jsonify({"mensagem": "Este tipo já existe!"}), 409
+
+        # Atualiza o nome
+        tipo_antigo = tipo.nome
+        tipo.nome = novo_nome
+        db.session.commit()
+
+        # Retorna o objeto completo atualizado no mesmo formato da rota GET
+        return jsonify({
+            "id": tipo.id,
+            "nome": tipo.nome
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"mensagem": "Erro ao atualizar tipo.", "erro": str(e)}), 500
+
+# Rota para deletar um tipo existente
+@main_routes.route('/api/tipos/<int:id>', methods=['DELETE'])
+def deletar_tipo(id):
+    try:
+        # Busca o tipo pelo ID
+        tipo = Tipos.query.get(id)
+        if not tipo:
+            return jsonify({"mensagem": "Tipo não encontrado."}), 404
+
+        # Verifica se existem produtos associados a este tipo
+        produtos_com_tipo = Produto.query.filter_by(tipo=tipo.nome).count()
+        if produtos_com_tipo > 0:
+            return jsonify({
+                "mensagem": "Não é possível excluir este tipo pois existem produtos associados a ele.",
+                "quantidade_produtos": produtos_com_tipo
+            }), 400
+
+        # Remove o tipo do banco de dados
+        db.session.delete(tipo)
+        db.session.commit()
+
+        return jsonify({"mensagem": "Tipo deletado com sucesso!"}), 200
+
+    except Exception as e:
+        # Em caso de erro, faz rollback e retorna uma mensagem de erro
+        db.session.rollback()
+        return jsonify({"mensagem": "Erro ao deletar tipo.", "erro": str(e)}), 500

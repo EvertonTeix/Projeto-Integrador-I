@@ -1,4 +1,4 @@
-/* Estilos Gerais */
+/* Estilos Gerais - Mantendo a fonte original */
 .home-admin {
     display: flex;
     height: 100vh;
@@ -6,21 +6,35 @@
     justify-content: flex-start;
 }
 
-/* Menu Lateral */
+/* Menu Lateral - Exatamente como estava */
 .menu-lateral {
-    width: 250px;
+    width: 260px;
     background-color: #333;
     color: #fff;
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    padding: 25px 20px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
+    position: relative;
+}
+
+.imagem-login {
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.imagem-login img {
+    max-width: 140px;
+    height: auto;
+    border-radius: 4px;
 }
 
 .menu-titulo {
-    font-size: 21px;
-    margin-bottom: 20px;
+    font-size: 20px;
+    margin-bottom: 25px;
     text-align: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .menu-opcoes {
@@ -29,81 +43,161 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    gap: 6px;
 }
 
 .menu-item {
-    padding: 15px;
-    margin: 10px 0;
+    padding: 14px 16px;
+    margin: 4px 0;
     cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    font-size: 16px;
+    border-radius: 6px;
+    transition: all 0.25s ease;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
 }
 
 .menu-item:hover {
     background-color: #444;
+    padding-left: 20px;
 }
 
 .menu-item.sair {
     margin-top: auto;
     background-color: #ff4d4d;
     text-align: center;
+    justify-content: center;
+    font-weight: 500;
+    letter-spacing: 0.5px;
 }
 
 .menu-item.sair:hover {
     background-color: #ff1a1a;
+    padding-left: 16px;
 }
 
-/* Conteúdo Principal */
+/* Conteúdo Principal - Exatamente como estava */
 .conteudo-principal {
     flex: 1;
-    padding: 40px;
+    padding: 35px 40px;
     background-color: #fff;
     overflow-y: auto;
 }
 
 .conteudo-principal h1 {
-    font-size: 28px;
+    font-size: 26px;
     color: #333;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    font-weight: 600;
 }
 
 .conteudo-principal p {
-    font-size: 16px;
+    font-size: 15px;
     color: #555;
-    margin-bottom: 30px;
+    margin-bottom: 28px;
+    line-height: 1.5;
 }
 
-/* Cards de Resumo */
+/* Header Data/Hora - Mantendo a fonte original */
+.header-dashboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.data-hora-container {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.data-display, .hora-display {
+    background-color: #f8f9fa;
+    padding: 10px 18px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    /* Removido font-family específico para manter o original */
+}
+
+.data-texto {
+    font-size: 0.95rem;
+    color: #495057;
+    font-weight: 500;
+}
+
+.hora-texto {
+    font-size: 1.1rem;
+    color: #212529;
+    font-weight: 600;
+}
+
+/* Cards de Resumo - Exatamente como estava */
 .cards-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px;
 }
 
 .card {
     background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 22px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.25s ease;
     text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
 }
 
 .card h2 {
-    font-size: 20px;
+    font-size: 18px;
     color: #333;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    font-weight: 500;
 }
 
 .card p {
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 28px;
+    font-weight: 600;
     color: #FFD700;
+    margin: 0;
+}
+
+/* Responsividade - Ajustes finos */
+@media (max-width: 992px) {
+    .menu-lateral {
+        width: 220px;
+    }
+    
+    .conteudo-principal {
+        padding: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-dashboard {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .data-hora-container {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .cards-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .menu-item {
+        padding: 12px 14px;
+    }
 }

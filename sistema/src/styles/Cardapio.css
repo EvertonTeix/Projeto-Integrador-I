@@ -1,8 +1,13 @@
 /* Estilos Gerais */
 .cardapio-container {
     padding: 20px;
-    font-family: Arial, sans-serif;
-    margin-top: 100px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-top: 1%;
+    max-width: 100%; /* Aumentei de 1200px para 1400px */
+    margin-left: 1%;
+    margin-right: 1%;
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 100px);
 }
 
 /* Cabeçalho */
@@ -10,42 +15,28 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
+    padding: 15px 25px;
     background-color: #fff;
     border-radius: 10px;
-    height: 80px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
     position: fixed;
     top: 0;
-    left: 20px; /* Ajuste para não considerar o menu lateral */
+    left: 20px;
     right: 20px;
     z-index: 100;
 }
 
 .cardapio-header h2 {
-    font-size: 2rem;
+    font-size: 1.8rem;
     color: #333;
-    font-weight: bold;
+    font-weight: 600;
+    margin: 0;
 }
 
 .cardapio-actions {
     display: flex;
     align-items: center;
-    gap: 15px;
-}
-
-.search-input {
-    padding: 10px 15px;
-    border: 1px solid #ddd;
-    border-radius: 25px;
-    font-size: 16px;
-    width: 250px;
-    transition: border-color 0.3s ease;
-}
-
-.search-input:focus {
-    border-color: #FFD700;
-    outline: none;
+    gap: 12px;
 }
 
 .button {
@@ -53,141 +44,218 @@
     background-color: #333;
     color: #fff;
     border: none;
-    border-radius: 25px;
+    border-radius: 30px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    font-size: 16px;
+    transition: all 0.3s ease;
+    font-size: 15px;
+    font-weight: 500;
 }
 
 .button:hover {
     background-color: #FFD700;
     color: #333;
-    transform: scale(1.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .button.voltar {
-    background-color: #FFD700; /* Azul para o botão de voltar */
+    background-color: #FFD700;
+    color: #333;
 }
 
 .button.voltar:hover {
     background-color: #333;
-    color: #FFD700
+    color: #FFD700;
 }
 
-/* Estilos para a tabela de produtos */
-.tipo-produto {
-    margin-top: 30px; /* Espaço para o cabeçalho fixo */
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    width: 97.2%;
-}
-
-.tipo-produto h3 {
-    font-size: 1.8rem;
-    color: #333;
-    margin-bottom: 20px;
-    font-weight: bold;
-}
-
-.produtos-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-
-.produtos-table th,
-.produtos-table td {
-    padding: 15px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-.produtos-table th {
-    background-color: #333;
-    color: #fff;
-    font-size: 1.1rem;
-    font-weight: bold;
-}
-
-.produtos-table tr:hover {
-    background-color: #f9f9f9;
-}
-
-.produtos-table {
-    width: 100%; /* Ocupa toda a largura disponível */
-    border-collapse: collapse;
-    margin-top: 10px;
-    table-layout: fixed; /* Distribui o espaço igualmente entre as colunas */
-}
-
-.produtos-table th,
-.produtos-table td {
-    padding: 15px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-    word-wrap: break-word; /* Quebra palavras longas para evitar overflow */
-}
-
-.produtos-table th {
-    background-color: #333;
-    color: #fff;
-    font-size: 1.1rem;
-    font-weight: bold;
-}
-
-.produtos-table tr:hover {
-    background-color: #f9f9f9;
-}
-
-/* Estilos para os botões de editar e excluir */
-.acoes-cell {
+/* Abas de tipos */
+.abas-container {
     display: flex;
-    gap: 10px; /* Espaço entre os botões */
+    gap: 10px;
+    margin-top: 100px;
+    padding: 15px 0;
+    overflow-x: auto;
+    position: sticky;
+    top: 80px;
+    background-color: #f8f9fa;
+    z-index: 90;
+    border-bottom: 1px solid #e0e0e0;
 }
 
-.button-editar,
-.button-remover {
+.abas-container::-webkit-scrollbar {
+    height: 5px;
+}
+
+.abas-container::-webkit-scrollbar-thumb {
+    background-color: #FFD700;
+    border-radius: 10px;
+}
+
+.aba-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 30px;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.aba-wrapper:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.aba {
+    padding: 8px 20px;
     background-color: transparent;
     border: none;
     cursor: pointer;
-    padding: 8px;
-    border-radius: 50%; /* Botões redondos */
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    color: #555;
+    transition: all 0.3s ease;
+}
+
+.aba:hover {
+    background-color: #f1f1f1;
+}
+
+.aba.ativa {
+    background-color: #333;
+    color: #FFD700;
+    font-weight: 600;
+}
+
+.aba-actions {
+    display: flex;
+    padding: 0 8px;
+    gap: 5px;
+}
+
+.button-editar, .button-remover {
+    padding: 5px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .button-editar {
-    color: #3498db; /* Azul */
-}
-
-.button-remover {
-    color: #e74c3c; /* Vermelho */
+    color: #FFD700;
+    background-color: rgba(255, 215, 0, 0.1);
 }
 
 .button-editar:hover {
-    background-color: rgba(52, 152, 219, 0.1); /* Azul claro */
-    transform: scale(1.1);
+    background-color: rgba(255, 215, 0, 0.2);
+}
+
+.button-remover {
+    color: #ff4444;
+    background-color: rgba(255, 68, 68, 0.1);
 }
 
 .button-remover:hover {
-    background-color: rgba(231, 76, 60, 0.1); /* Vermelho claro */
-    transform: scale(1.1);
+    background-color: rgba(255, 68, 68, 0.2);
 }
 
-/* Ícones para os botões */
-.button-editar::after {
-    content: '✏️'; /* Ícone de editar */
+/* Conteúdo da aba */
+.conteudo-aba {
+    padding: 25px;
+    margin-top: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
 }
 
-.button-remover::after {
-    content: '🗑️'; /* Ícone de lixeira */
+/* Tabela de produtos */
+.produtos-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 15px;
 }
 
-/* Estilos para o modal */
+.produtos-table th {
+    background-color: #333;
+    color: #fff;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    position: sticky;
+    top: 140px;
+}
+
+.produtos-table td {
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+    color: #555;
+}
+
+.produtos-table tr:last-child td {
+    border-bottom: none;
+}
+
+.produtos-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Ações */
+.acoes-cell {
+    display: flex;
+    gap: 8px;
+}
+
+.button.editar, .button.remover {
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.button.editar {
+    background-color: #FFD700;
+    color: #333;
+}
+
+.button.editar:hover {
+    background-color: #e6c200;
+}
+
+.button.remover {
+    background-color: #ff4444;
+    color: white;
+}
+
+.button.remover:hover {
+    background-color: #cc0000;
+}
+
+/* Mensagem sem produtos */
+.sem-produtos {
+    text-align: center;
+    padding: 50px;
+    color: #777;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+/* Modais */
 .modal {
     position: fixed;
     top: 0;
@@ -198,65 +266,185 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
 .modal-content {
     background-color: #fff;
     padding: 30px;
     border-radius: 10px;
-    width: 400px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
 }
 
 .modal-content h3 {
     margin-top: 0;
-    font-size: 1.5rem;
+    margin-bottom: 25px;
     color: #333;
-    margin-bottom: 20px;
+    font-size: 1.5rem;
 }
 
-.modal-content .input {
+.input {
     width: 100%;
-    padding: 10px;
+    padding: 12px 15px;
     margin-bottom: 15px;
     border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 16px;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: all 0.3s;
 }
 
-.modal-content .button {
-    padding: 10px 20px;
-    margin-right: 10px;
-    background-color: #333;
+.input:focus {
+    border-color: #FFD700;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.button.cancelar {
+    background-color: #999;
     color: #fff;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
-.modal-content .button:hover {
+.button.cancelar:hover {
+    background-color: #777;
+}
+
+/* Modal de Gerenciar Categorias - Ajustes */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 600px; /* Aumentei de 500px para 600px */
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Itens da lista de categorias */
+.categoria-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+}
+
+.categoria-actions {
+    display: flex;
+    gap: 12px; /* Aumentei o espaçamento entre botões */
+}
+
+/* Botões de ação */
+.button-editar, 
+.button-remover {
+    padding: 8px 16px; /* Tamanho maior */
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+    min-width: 80px; /* Largura mínima para uniformidade */
+}
+
+.button-editar {
     background-color: #FFD700;
     color: #333;
 }
 
-.sem-produtos {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%; /* Ocupa toda a largura */
-    height: 100vh; /* Ocupa toda a altura da tela */
-    font-size: 1em;
-    color: #666; /* Cor do texto */
-    background-color: transparent; /* Fundo transparente */
-    text-align: center;
-    padding: 0;
-    margin: 0;
-    border: none; /* Remove bordas */
-    box-shadow: none; /* Remove sombras */
-    position: fixed; /* Fixa o elemento na tela */
-    top: 0;
-    left: 0;
-    overflow: hidden; /* Remove o scroll */
+.button-editar:hover {
+    background-color: #e6c200;
+    transform: translateY(-2px);
 }
 
+.button-remover {
+    background-color: #ff4444;
+    color: white;
+}
+
+.button-remover:hover {
+    background-color: #cc0000;
+    transform: translateY(-2px);
+}
+
+/* Título do modal */
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    color: #333;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+/* Lista de categorias */
+.categorias-list {
+    max-height: 60vh;
+    overflow-y: auto;
+    margin: 20px 0;
+    padding: 0 10px;
+}
+
+/* Responsividade */
+@media (max-width: 992px) {
+    .cardapio-header {
+        flex-direction: column;
+        height: auto;
+        padding: 15px;
+        gap: 15px;
+    }
+    
+    .cardapio-actions {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .abas-container {
+        top: 140px;
+    }
+    
+    .produtos-table th {
+        top: 180px;
+    }
+}
+
+@media (max-width: 768px) {
+    .produtos-table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .modal-content {
+        padding: 20px;
+    }
+    
+    .aba-wrapper {
+        flex-direction: column;
+        padding: 8px;
+    }
+    
+    .aba-actions {
+        margin-top: 5px;
+    }
+}

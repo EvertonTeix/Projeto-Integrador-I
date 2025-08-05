@@ -1,136 +1,225 @@
-.consultar-container {
+/* Container principal */
+.cardapio-container {
     padding: 20px;
-    font-family: Arial, sans-serif;
-    margin-top: 130px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    min-height: 100vh;
 }
 
-.consultar-header {
+.cardapio-header {
     display: flex;
-    align-items: center;
-    padding: 20px;
     justify-content: space-between;
+    align-items: center; /* Isso alinha verticalmente todos os itens */
+    padding: 15px 25px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    height: 80px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    top: 0;
-    left: 20px; /* Ajuste para não considerar o menu lateral */
-    right: 20px;
-    z-index: 100;
-}
-
-.consultar-header h2 {
-    font-size: 2rem;
-    color: #333;
-    font-weight: bold;
-}
-
-.search-input {
-    padding: 10px 15px;
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    font-size: 16px;
-    width: 250px;
-}
-
-.produtos-por-tipo {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-}
-
-.tipo-section-func {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.tipo-section-func h3 {
-    font-size: 1.8rem;
-    margin-bottom: 10px;
-    color: #444;
-    border-bottom: 2px solid #FFD700;
-    display: inline-block;
-    padding-bottom: 5px;
-}
-
-.coluna-produtos {
-    display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 15px;
 }
 
-.cardapio-item {
-    background-color: #fff;
-    padding: 15px;
-    border: 2px solid transparent;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    cursor: pointer;
-    transition: all 0.3s ease;
+/* Container das ações (busca + botão) */
+.header-actions {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 15px;
+    flex-grow: 1;
+    justify-content: flex-end;
 }
 
-.cardapio-item:hover {
-    border-color: #FFD700;
+/* Container do campo de busca - corrigido */
+.search-container {
+    flex: 1;
+    min-width: 150px;
+    max-width: 500px;
+    margin: 0 auto;
 }
 
-.cardapio-item h4 {
-    font-size: 18px;
-    color: #222;
-}
-
-.cardapio-item p {
-    margin: 0 0 5px;
-    color: #666;
-}
-
-.cardapio-item span {
-    font-weight: bold;
-    font-size: 18px;
-    margin-right: 15px;
-    color: #222;
-}
-
-
-
-.pedido-footer-func {
-    margin-top: 70px;
-    display: flex;
-    justify-content:flex-end;
-    align-items: center;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
-}
-
-.button {
+/* Campo de busca - corrigido */
+.search-input {
+    width: 100%;
     padding: 10px 20px;
-    background-color: #333;
-    color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    font-size: 15px;
+    transition: all 0.3s;
+    box-sizing: border-box;
+}
+
+.search-input:focus {
+    border-color: #FFD700;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+}
+
+/* Botão Voltar */
+.button.voltar {
+    padding: 10px 20px;
+    background-color: #FFD700;
+    color: #333;
     border: none;
-    border-radius: 25px;
+    border-radius: 30px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 16px;
-}
-
-.button:hover {
-    background-color: #FFD700;
-    color: #333;
-}
-
-.button.voltar {
-    background-color: #FFD700;
-    color: #333;
-    margin-left: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .button.voltar:hover {
     background-color: #333;
     color: #FFD700;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Abas de tipos */
+.abas-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 100px;
+    padding: 15px 0;
+    overflow-x: auto;
+    position: sticky;
+    top: 80px;
+    background-color: #f8f9fa;
+    z-index: 90;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.abas-container::-webkit-scrollbar {
+    height: 5px;
+}
+
+.abas-container::-webkit-scrollbar-thumb {
+    background-color: #FFD700;
+    border-radius: 10px;
+}
+
+.aba-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 30px;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.aba-wrapper:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.aba {
+    padding: 8px 20px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    color: #555;
+    transition: all 0.3s ease;
+}
+
+.aba:hover {
+    background-color: #f1f1f1;
+}
+
+.aba.ativa {
+    background-color: #333;
+    color: #FFD700;
+    font-weight: 600;
+}
+
+/* Conteúdo da aba */
+.conteudo-aba {
+    padding: 25px;
+    margin-top: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Tabela de produtos */
+.produtos-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 15px;
+}
+
+.produtos-table th {
+    background-color: #333;
+    color: #fff;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    position: sticky;
+    top: 140px;
+}
+
+.produtos-table td {
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+    color: #555;
+}
+
+.produtos-table tr:last-child td {
+    border-bottom: none;
+}
+
+.produtos-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Mensagem sem produtos */
+.sem-produtos {
+    text-align: center;
+    padding: 50px;
+    color: #777;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+/* Responsividade */
+@media (max-width: 992px) {
+    .cardapio-header {
+        flex-direction: column;
+        height: auto;
+        padding: 15px;
+        gap: 15px;
+    }
+    
+    .cardapio-actions {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .abas-container {
+        top: 140px;
+    }
+    
+    .produtos-table th {
+        top: 180px;
+    }
+}
+
+@media (max-width: 768px) {
+    .produtos-table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .search-input {
+        min-width: 200px;
+    }
 }

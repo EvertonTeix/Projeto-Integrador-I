@@ -19,6 +19,8 @@ function FazerPedido() {
   });
   const [outroPagamento, setOutroPagamento] = useState('');
   const usuario = JSON.parse(localStorage.getItem('usuario'));
+  const [observacaoItem, setObservacaoItem] = useState('');
+  const [observacaoPedido, setObservacaoPedido] = useState('');
 
 
 
@@ -52,31 +54,45 @@ function FazerPedido() {
         }));
     };
 
-    const adicionarItem = () => {
-        if (!produtoSelecionado || quantidade <= 0) return;
+  const adicionarItem = () => {
+    if (!produtoSelecionado || quantidade <= 0) return;
 
-        const itemExistente = itensSelecionados.find(item => item.id === produtoSelecionado.id);
+    const itemExistente = itensSelecionados.find(item => item.id === produtoSelecionado.id);
 
-        if (itemExistente) {
-        const novaLista = itensSelecionados.map(item =>
-            item.id === produtoSelecionado.id
-            ? { ...item, quantidade: item.quantidade + quantidade }
-            : item
-        );
-        setItensSelecionados(novaLista);
-        } else {
-        setItensSelecionados([...itensSelecionados, { ...produtoSelecionado, quantidade }]);
+    if (itemExistente) {
+      const novaLista = itensSelecionados.map(item =>
+        item.id === produtoSelecionado.id
+          ? { 
+              ...item, 
+              quantidade: item.quantidade + quantidade,
+              observacao: observacaoItem || item.observacao
+            }
+          : item
+      );
+      setItensSelecionados(novaLista);
+    } else {
+      setItensSelecionados([
+        ...itensSelecionados, 
+        { 
+          ...produtoSelecionado, 
+          quantidade,
+          observacao: observacaoItem 
         }
+      ]);
+    }
 
-        setProdutoSelecionado(null);
-        setQuantidade(1);
-        calcularTotal([...itensSelecionados, { ...produtoSelecionado, quantidade }]);
-    };
+    setProdutoSelecionado(null);
+    setQuantidade(1);
+    setObservacaoItem('');
+    calcularTotal([...itensSelecionados, { ...produtoSelecionado, quantidade }]);
+  };
 
     const removerItem = (id) => {
-        const novaLista = itensSelecionados.filter(item => item.id !== id);
-        setItensSelecionados(novaLista);
-        calcularTotal(novaLista);
+        if (window.confirm('Tem certeza que deseja remover este item do pedido?')) {
+            const novaLista = itensSelecionados.filter(item => item.id !== id);
+            setItensSelecionados(novaLista);
+            calcularTotal(novaLista);
+        }
     };
 
     const calcularTotal = (lista) => {
@@ -100,13 +116,15 @@ function FazerPedido() {
                 funcionario_id: usuario.id,
                 produtos: itensSelecionados.map(item => ({
                     id: item.id,
-                    quantidade: item.quantidade
+                    quantidade: item.quantidade,
+                    observacao: item.observacao || null
                 })),
                 total: total,
                 nome: cliente.nome,
                 endereco: cliente.tipoEntrega === 'entrega' ? cliente.endereco : null,
                 forma_pagamento: cliente.formaPagamento === 'outro' ? outroPagamento : cliente.formaPagamento,
-                data_hora_local: new Date().toISOString() // Adiciona data/hora atual do cliente
+                data_hora_local: new Date().toISOString(), // Adiciona data/hora atual do cliente
+                observacao: observacaoPedido || null
             };
 
             try {
@@ -160,7 +178,7 @@ function FazerPedido() {
         <button className="button voltar" onClick={() => navigate('/funcionario')}>Voltar</button>
       </div>
 
-      <div className="pedido-content">
+      <div className="pedido-area">
         {/* LADO ESQUERDO: BUSCA E LISTA DE PRODUTOS */}
         <div className="busca-produtos">
           <input
@@ -172,9 +190,7 @@ function FazerPedido() {
           />
 
           <div className="lista-produtos">
-            {termoBusca.trim() === '' ? (
-              <p className="mensagem-busca">Digite para buscar produtos</p>
-            ) : Object.keys(produtosPorTipo).length > 0 ? (
+            {Object.keys(produtosPorTipo).length > 0 ? (
               Object.entries(produtosPorTipo).map(([tipo, produtos]) => (
                 <div key={tipo} className="tipo-section">
                   <h3>{tipo}</h3>
@@ -201,31 +217,38 @@ function FazerPedido() {
           </div>
         </div>
 
-        {/* LADO DIREITO: ITENS SELECIONADOS */}
-        <div className="itens-selecionados">
-          <h3>Itens do Pedido</h3>
-          {itensSelecionados.length === 0 ? (
-            <p className="mensagem-lista">Nenhum item selecionado</p>
-          ) : (
-            <ul className="lista-itens">
-              {itensSelecionados.map((item) => (
-                <li key={item.id} className="item-pedido">
-                  <div>
-                    <span>{item.nome} ({item.tipo})</span>
-                    <small>R$ {item.preco.toFixed(2)} x {item.quantidade}</small>
-                  </div>
-                  <button onClick={() => removerItem(item.id)}>Remover</button>
-                </li>
-              ))}
-            </ul>
-          )}
-          <div className="total-pedido">
-            <h3>Total: R$ {total.toFixed(2)}</h3>
-            <button className="button enviar" onClick={handleFinalizarClick}>
-              Finalizar Pedido
-            </button>
+          {/* LADO DIREITO: ITENS SELECIONADOS */}
+          <div className="itens-selecionados">
+            <h3>Itens do Pedido</h3>
+            {itensSelecionados.length === 0 ? (
+              <p className="mensagem-lista">Nenhum item selecionado</p>
+            ) : (
+              <ul className="lista-itens">
+                {itensSelecionados.map((item) => (
+                  <li key={item.id} className="item-pedido">
+                    <div className="item-info">
+                      <div className="item-header">
+                        <span><b>{item.nome} ({item.tipo})</b></span>
+                        <small> - R$ {item.preco.toFixed(2)} x {item.quantidade}</small>
+                      </div>
+                      {item.observacao && (
+                        <div className="item-observacao">
+                          <small>Obs: {item.observacao}</small>
+                        </div>
+                      )}
+                    </div>
+                    <button onClick={() => removerItem(item.id)}>Remover</button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div className="total-pedido">
+              <h3>Total: R$ {total.toFixed(2)}</h3>
+              <button className="button enviar" onClick={handleFinalizarClick}>
+                Finalizar Pedido
+              </button>
+            </div>
           </div>
-        </div>
       </div>
 
       {/* MODAL DE QUANTIDADE */}
@@ -239,8 +262,23 @@ function FazerPedido() {
               <span>{quantidade}</span>
               <button onClick={() => setQuantidade(quantidade + 1)}>+</button>
             </div>
+            
+            {/* Novo campo de observação */}
+            <div className="form-group">
+              <label>Observações:</label>
+              <textarea
+                value={observacaoItem}
+                onChange={(e) => setObservacaoItem(e.target.value)}
+                placeholder="Ex: Sem cebola, ponto da carne, etc."
+                rows={2}
+              />
+            </div>
+            
             <div className="modal-buttons">
-              <button onClick={() => setProdutoSelecionado(null)}>Cancelar</button>
+              <button onClick={() => {
+                setProdutoSelecionado(null);
+                setObservacaoItem('');
+              }}>Cancelar</button>
               <button onClick={adicionarItem}>Adicionar</button>
             </div>
           </div>
@@ -303,6 +341,7 @@ function FazerPedido() {
                 <option value="outro">Outro</option>
               </select>
             </div>
+          
 
             {cliente.formaPagamento === 'outro' && (
               <div className="form-group">
@@ -316,6 +355,16 @@ function FazerPedido() {
                 />
               </div>
             )}
+
+            <div className="form-group">
+                <label>Observações Gerais do Pedido:</label>
+                <textarea
+                    value={observacaoPedido}
+                    onChange={(e) => setObservacaoPedido(e.target.value)}
+                    placeholder="Ex: Pedido urgente, embalagem especial, etc."
+                    rows={3}
+                />
+            </div>
 
             <div className="modal-buttons">
               <button onClick={() => setShowClienteModal(false)}>Cancelar</button>
