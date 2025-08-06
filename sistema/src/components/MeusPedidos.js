@@ -59,7 +59,7 @@ function MeusPedidos() {
                                 />
                             </div>
                             <p>Data: {pedido.data_hora}</p>
-                            <p>Funcionário: {pedido.funcionario}</p>
+                            <p><strong>Cliente: {pedido.nome_cliente}</strong></p>
                             <ul>
                                 {pedido.itens.map((item, idx) => (
                                     <li key={idx}>

@@ -43,12 +43,26 @@ function Recibo() {
                 <h1 style={{ textAlign: 'center' }}>Esfiharia Buon Gusto</h1>
                 <h2>Recibo do Pedido #{pedido.id}</h2>
                 <p>Data: {pedido.data_hora}</p>
-                <p>Funcionário: {pedido.funcionario}</p>
+                
+                <p><strong>Cliente: {pedido.nome_cliente}</strong></p>
+                {pedido.endereco && (
+                    <p>Endereço: {pedido.endereco}</p>
+                )}
+                <p>Forma de Pagamento: {pedido.forma_pagamento}</p>
+                {pedido.observacao_pedido && (
+                    <p>Observações do Pedido: {pedido.observacao_pedido}</p>
+                )}
+
                 <hr />
                 <ul>
                     {pedido.itens.map((item, idx) => (
                         <li key={idx}>
                             {item.quantidade}x {item.tipo} de {item.nome} - R$ {item.preco_unitario.toFixed(2)}
+                            {item.observacao && (
+                                <div style={{ fontStyle: 'italic', fontSize: '0.9em', marginLeft: '10px' }}>
+                                    Observação: {item.observacao}
+                                </div>
+                            )}
                         </li>
                     ))}
                 </ul>

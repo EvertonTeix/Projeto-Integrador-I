@@ -343,6 +343,9 @@ def listar_pedidos_completos():
                 if not produto:
                     continue  # ou retorne erro
 
+                tipo_normalizado = produto.tipo.strip().lower()
+
+
                 itens.append({
                     "tipo": produto.tipo,
                     "nome": produto.nome,
@@ -352,21 +355,24 @@ def listar_pedidos_completos():
                     "observacao": item.observacao  # Observação do item
                 })
 
-                if produto.tipo == "Pizza":
+                if tipo_normalizado == "pizzas":
                     total_pizzas += item.quantidade
-                else:
+                elif tipo_normalizado == "esfihas":
                     total_esfihas += item.quantidade
 
             pedidos_json.append({
                 "id": pedido.id,
                 "data_hora": pedido.data_hora.strftime("%d/%m/%Y %H:%M"),
-                "funcionario": pedido.funcionario.nome,
+                "nome_cliente": pedido.nome,
+                "endereco": pedido.endereco,
+                "forma_pagamento": pedido.forma_pagamento,
+                "observacao_pedido": pedido.observacao,
                 "total": round(pedido.total, 2),
                 "total_esfihas": total_esfihas,
                 "total_pizzas": total_pizzas,
-                "observacao": pedido.observacao,  # Observação geral do pedido
                 "itens": itens
             })
+
 
         return jsonify(pedidos_json), 200
 
@@ -399,15 +405,28 @@ def imprimir_recibo():
     pedido = request.get_json()
 
     try:
-        # Substitua pelos valores corretos da sua impressora
         printer = Usb(0x0416, 0x5011)
 
         printer.set(align='center', bold=True, width=2, height=2)
         printer.text("Esfiharia Buon Gusto\n\n")
+
         printer.set(align='center', bold=False, width=1, height=1)
         printer.text(f"Pedido #{pedido['id']}\n")
         printer.text(f"Data: {pedido['data_hora']}\n")
-        printer.text(f"Funcionário: {pedido['funcionario']}\n")
+        printer.text("-" * 42 + "\n")
+
+        if 'nome_cliente' in pedido:
+            printer.text(f"Cliente: {pedido['nome_cliente']}\n")
+
+        if pedido.get('endereco'):
+            printer.text(f"Endereço: {pedido['endereco']}\n")
+
+        if pedido.get('forma_pagamento'):
+            printer.text(f"Pagamento: {pedido['forma_pagamento']}\n")
+
+        if pedido.get('observacao_pedido'):
+            printer.text(f"Obs. do Pedido: {pedido['observacao_pedido']}\n")
+
         printer.text("-" * 42 + "\n")
         printer.set(align='left')
 
@@ -416,12 +435,15 @@ def imprimir_recibo():
             preco = f"R$ {item['preco_unitario']:.2f}  Sub: R$ {item['subtotal']:.2f}"
             printer.text(f"{nome}\n")
             printer.text(f"{preco}\n")
+            if item.get('observacao'):
+                printer.text(f"  Obs: {item['observacao']}\n")
 
         printer.text("-" * 42 + "\n")
         printer.text(f"Total de Esfihas: {pedido.get('total_esfihas', 0)}\n")
         printer.text(f"Total de Pizzas: {pedido.get('total_pizzas', 0)}\n")
         printer.text(f"TOTAL: R$ {pedido['total']:.2f}\n")
         printer.text("-" * 42 + "\n")
+
         printer.set(align='center')
         printer.text("Obrigado pela preferência!\n\n")
         printer.cut()
@@ -431,6 +453,7 @@ def imprimir_recibo():
     except Exception as e:
         print("Erro na impressão:", e)
         return jsonify({"success": False, "message": "Erro ao imprimir recibo."}), 500
+
 
 @main_routes.route('/funcionario/deletar/<int:id>', methods=['DELETE'])
 def deletar_funcionario(id):
