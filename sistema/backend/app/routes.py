@@ -76,8 +76,8 @@ def login():
     senha = dados.get('senha')
 
     # Criptografa a senha enviada pelo front-end
-    senha_criptografada = hashlib.sha256(senha.encode()).hexdigest()
-
+    #senha_criptografada = hashlib.sha256(senha.encode()).hexdigest()
+    senha_criptografada = senha
     # Busca o usuário no banco de dados
     usuario = Usuario.query.filter_by(email=email, senha=senha_criptografada).first()
 

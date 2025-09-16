@@ -11,7 +11,7 @@ def create_app():
     CORS(app)
 
     # Configura o banco de dados
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/sistema_vendas'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/sistema_vendas'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Inicializa o SQLAlchemy com a instância do Flask
@@ -24,3 +24,6 @@ def create_app():
     app.register_blueprint(routes.main_routes)
 
     return app
+
+
+#show de bolota, só fzr o adm agr
